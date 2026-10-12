@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Авторизация</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .container {
+      width: 320px;
+      padding: 40px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+    
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+    
+    .input-group {
+      position: relative;
+      margin-bottom: 25px;
+    }
+    
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s;
+      box-sizing: border-box;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    }
+    
+    .password-wrapper {
+      position: relative;
+    }
+    
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #777;
+    }
+    
+    .logbtn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(to right, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+    
+    .logbtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .logbtn:active {
+      transform: translateY(0);
+    }
+    
+    .telegram-btn {
+      margin-top: 20px;
+      min-height: 42px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .telegram-note {
+      margin-top: 10px;
+      color: #777;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    
+    .divider {
+      margin: 25px 0;
+      position: relative;
+      text-align: center;
+      color: #999;
+    }
+    
+    .divider::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #eee;
+      z-index: 1;
+    }
+    
+    .divider span {
+      position: relative;
+      z-index: 2;
+      background: white;
+      padding: 0 15px;
+    }
+  </style>
+</head>
+<body>
+  <form action="/auth" method="get" class="container">
+    <h1>Авторизация</h1>
+    
+    <div class="input-group">
+      <input name="login" placeholder="Логин" id="login" />
+    </div>
+    
+    <div class="input-group password-wrapper">
+      <input name="password" placeholder="Пароль" type="password" id="psswd">
+      <button type="button" class="toggle-password" onclick="changeVis()">
+        <img id="psdIMG" src="static/lock.png" width="18px" />
+      </button>
+    </div>
+    
+    <button class="logbtn" id="mainbtn" type="submit">Войти</button>
+    
+    <div class="divider"><span>или</span></div>
+    
+    <div class="telegram-btn">
+      <script async
+              src="https://telegram.org/js/telegram-widget.js?22"
+              data-telegram-login="webv3_bot"
+              data-size="large"
+              data-userpic="false"
+              data-auth-url="https://lhqi4ukfc.localto.net/telegram">
+      </script>
+    </div>
+  </form>
+
+  <script>
+    // Telegram передаёт данные профиля в callback.
+    // Для реальной авторизации сервер должен проверить hash по правилам Telegram.
+    function onTelegramAuth(user) {
+      if (!user || !user.id) {
+        alert('Не удалось получить данные Telegram.');
+        return;
+      }
+
+      // Пока серверная часть не подключена, показываем подтверждение получения профиля.
+      // Не используйте этот callback как единственную проверку личности пользователя.
+      const displayName = [user.first_name, user.last_name].filter(Boolean).join(' ');
+      alert('Telegram подключён: ' + (displayName || user.username || user.id) +
+            '. Для завершения входа требуется серверная проверка.');
+    }
+
+    function changeVis() {
+      const passwordInput = document.getElementById('psswd');
+      const toggleIcon = document.getElementById('psdIMG');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.src = 'static/unlock.png';
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.src = 'static/lock.png';
+      }
+    }
+  </script>
+</body>
+</html>
